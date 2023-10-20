@@ -1,0 +1,45 @@
+version : '3.5'
+
+
+services:
+  postgres:
+    image: 'postgres'
+    restart: always
+    volumes:
+      - './${VOLUME_FOLDER}:/var/lib/postgres/data'
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - ${PORT}:${PORT}
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nest-docker-postgres
+    environment:
+      - API_URL=${API_URL}
+      - API_PORT=${API_PORT}
+      - VOLUME_FOLDER=postgres_data_dev
+      - POSTGRES_USER=postgres_dev
+      - POSTGRES_PASSWORD=dev123
+      - POSTGRES_DB=blogDev
+      - DATABASE_URL='postgres://postgres_dev:dev123@postgres:5432/blogDev'
+    ports:
+      - '3000:3000'
+    depends_on:
+      - postgres
+    volumes:
+      - ./src:/app/src
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    container_name: nest-pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=pgadmin4
+    ports:
+      - '5050:80'
+    depends_on:
+      - postgres
