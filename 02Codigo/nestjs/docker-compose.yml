@@ -1,8 +1,9 @@
-version : '2'
+version : '3.5'
+
 
 services:
   postgres:
-    image: 'postgres:last'
+    image: 'postgres'
     restart: always
     volumes:
       - './${VOLUME_FOLDER}:/var/lib/postgres/data'
@@ -12,3 +13,27 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
     ports:
       - ${PORT}:${PORT}
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nest-docker-postgres
+    environment:
+      - PORT=${API_PORT}
+    ports:
+      - '3000:3000'
+    depends_on:
+      - postgres
+    volumes:
+      - ./src:/app/src
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    container_name: nest-pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=pgadmin4
+    ports:
+      - '5050:80'
+    depends_on:
+      - db
