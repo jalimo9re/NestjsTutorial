@@ -9,7 +9,7 @@
         "build": "nest build",
         "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
         "nest": "nest start --watch   set NODE_ENV=dev & ",
-        "nest:dev": "set NODE_ENV=dev&&nest start --watch",
+        "nest:dev": "nest start --watch",
         "docker:dv": "docker compose --env-file ./config/.env.dev up",
         "start:debug": "nest start --debug --watch",
         "start:prod": "node dist/main",

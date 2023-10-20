@@ -19,7 +19,13 @@ services:
       dockerfile: Dockerfile
     container_name: nest-docker-postgres
     environment:
-      - PORT=${API_PORT}
+      - API_URL=${API_URL}
+      - API_PORT=${API_PORT}
+      - VOLUME_FOLDER=postgres_data_dev
+      - POSTGRES_USER=postgres_dev
+      - POSTGRES_PASSWORD=dev123
+      - POSTGRES_DB=blogDev
+      - DATABASE_URL='postgres://postgres_dev:dev123@postgres:5432/blogDev'
     ports:
       - '3000:3000'
     depends_on:
@@ -36,4 +42,4 @@ services:
     ports:
       - '5050:80'
     depends_on:
-      - db
+      - postgres
