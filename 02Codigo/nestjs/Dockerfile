@@ -8,4 +8,6 @@ WORKDIR /app
 
 COPY . .
 
+CMD [ "sleep", "60"]
+
 CMD [ "npm", "run", "nest:dev" ]

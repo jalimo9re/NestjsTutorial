@@ -71,3 +71,14 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+
+# Para generar los modulos y demas no hay que entrar en la carpeta src, se la podemos inferir al crearlos
+nest generate module user
+pues a mi me lo hace bien ...
+$ nest -v
+10.1.18
+
+por si acaso
+para crear los servicicos y los controller en una subcarpeta usar 
+nest generate controller user/controller
