@@ -6,6 +6,7 @@ import { UserEntity } from './model/user.interface';
 
 
 @Module({
+  
   imports:[TypeOrmModule.forFeature([UserEntity])],
   providers: [UserService],
   controllers: [ UserController],
