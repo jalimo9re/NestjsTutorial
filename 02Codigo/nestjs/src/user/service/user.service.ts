@@ -5,6 +5,7 @@ import { Observable,from, map, switchMap } from 'rxjs';
 import { UserEntity } from '../model/user.entity';
 import { User } from '../model/user.interface';
 import { AuthService } from 'src/auth/services/auth.service';
+import { Console } from 'console';
 
 @Injectable()
 export class UserService {
@@ -15,9 +16,25 @@ export class UserService {
     ){}
 
     create(user:User):Observable<User>{
-        return from(this.userRepository.save(user));
+        //return from(this.userRepository.save(user));
+        return this.authService.hashPassword(user.password).pipe(
+            switchMap((passwordHash:string)=>{
+                const newUser=new UserEntity();
+                newUser.email   =user.email;
+                newUser.name    =user.name;
+                newUser.password=passwordHash;
+                return from (this.userRepository.save(newUser)).pipe(
+                    map((user:User)=>{
+                        const {password ,...result}=user;   
+                        return result;
+                    })
+                );
+            })
+        );
     }
     login(user:User):Observable<string>{
+        console.log(process.env.JWT_SECRET);
+        console.log(process.env.JWT_EXPIRES_IN);
         return this.validateUser(user.email,user.password).pipe(
             switchMap((user:User)=>{
                 if(user){

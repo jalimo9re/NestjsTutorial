@@ -7,7 +7,8 @@
     "license": "UNLICENSED",
     "scripts": {
         "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-        "docker:redb": "docker compose --env-file ./config/.env.dev up --build",
+        "nest:dev" : "nest start --watch",
+        "docker:dvrb": "docker compose --env-file ./config/.env.dev up --build",
         "docker:dv": "docker compose --env-file ./config/.env.dev up",
         "test:watch": "jest --watch",
         "test:cov": "jest --coverage",

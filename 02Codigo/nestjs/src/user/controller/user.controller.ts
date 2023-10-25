@@ -1,14 +1,16 @@
 import { Controller,Post,Body, Get, Param,Put ,Delete} from '@nestjs/common';
 import { UserService } from '../service/user.service';
-import { Observable, catchError, map, of } from 'rxjs';
+import { Observable, catchError, map, of, switchMap } from 'rxjs';
 import { DeleteDateColumn } from 'typeorm';
 import { User } from '../model/user.interface';
+import { AuthService } from 'src/auth/services/auth.service';
+import { UserEntity } from '../model/user.entity';
 
 @Controller('users')
 export class UserController {
-    constructor(private userService:UserService){}
+    constructor(private userService:UserService,
+       ){}
     
-
     @Post()
     create(@Body() user:User):Observable<User |{error:any}>{
         return this.userService.create(user).pipe(
@@ -18,10 +20,10 @@ export class UserController {
     }
 
     @Post('login')
-    login(@Body() user:User):Observable<string>{
+    login(@Body() user:User):Observable<{access_token : any}>{ 
         return this.userService.login(user).pipe(
             map((jwt:string)=>{
-                return jwt;
+                return { access_token : jwt};
             })
         );
     }
