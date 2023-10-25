@@ -9,6 +9,9 @@ async function bootstrap() {
   console.log(process.env.POSTGRES_PASSWORD);
   console.log(process.env.POSTGRES_DB);
   console.log(process.env.DATABASE_URL);
+  console.log(process.env.JWT_SECRET);
+  console.log(process.env.JWT_EXPIRES_IN);
+  
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
   await app.listen(process.env.API_PORT);

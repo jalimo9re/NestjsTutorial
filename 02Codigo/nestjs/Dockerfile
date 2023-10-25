@@ -2,12 +2,10 @@ FROM node:18
 
 WORKDIR /app
 
-#COPY package*.json ./
+COPY package*.json ./
 
-#RUN npm install
+RUN npm install
 
 COPY . .
-
-CMD [ "sleep", "60"]
 
 CMD [ "npm", "run", "nest:dev" ]
