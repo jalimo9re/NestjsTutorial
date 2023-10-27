@@ -11,7 +11,7 @@ export class AuthService {
 
     comparePasswords(
         passwordSended:string,
-        passwordBBDD:string):Observable<any>{
+        passwordBBDD:string):Observable<any | boolean>{
         const match = bcrypt.compare(passwordSended,passwordBBDD);
         return from<any | boolean>(match);
     }
