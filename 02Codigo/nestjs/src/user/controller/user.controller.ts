@@ -1,4 +1,4 @@
-import { Controller,Post,Body, Get, Param,Put ,Delete, UseGuards, Req} from '@nestjs/common';
+import { Controller,Post,Body, Get, Param,Put ,Delete, UseGuards, Req, Query} from '@nestjs/common';
 import { UserService } from '../service/user.service';
 import { Observable, catchError, map, of, switchMap } from 'rxjs';
 import { DeleteDateColumn } from 'typeorm';
@@ -10,6 +10,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Usr } from 'src/auth/decorators/user.decorator';
 import { Console } from 'console';
+import { Pagination } from 'nestjs-typeorm-paginate';
 
 @Controller('users')
 export class UserController {
@@ -82,14 +83,27 @@ export class UserController {
         
     }
 
-    // TODO 
+    /*// TODO 
     @hasRoles(UserRole.ADMIN)
     @UseGuards(JwtAuthGuard,RolesGuard)
     @Get()
     findAll():Observable<User[]>{
         return this.userService.findAll();
-    }
-    
+    }*/
+    @Get()
+    index(
+        @Query('page') page=1,
+        @Query('limit') limit=100,
+    ):Observable<Pagination<User>>{
+        limit= limit > 100 ? 100 : limit;
+
+        const route= `${process.env.API_URL}:${process.env.PORT}/api/users`;
+        return this.userService.paginate({
+            page : Number(page),
+            limit : Number(limit),
+            route
+        });
+    }    
 
     @Post('exists')//TODO mirar porque devuelve el primer usuario sino se le pasa un email
     emailExits(@Body() user:User):Observable<Boolean>{

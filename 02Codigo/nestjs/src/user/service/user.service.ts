@@ -5,7 +5,12 @@ import { Observable,from, map, switchMap } from 'rxjs';
 import { UserEntity } from '../model/user.entity';
 import { User } from '../model/user.interface';
 import { AuthService } from 'src/auth/services/auth.service';
-import { Console } from 'console';
+import {
+    paginate,
+    Pagination,
+    IPaginationOptions,
+  } from 'nestjs-typeorm-paginate';
+  
 
 
 @Injectable()
@@ -155,5 +160,16 @@ export class UserService {
 
     deleteOne(id:number):Observable<any>{
         return from(this.userRepository.delete(Number(id)))
+    }
+
+    paginate(options: IPaginationOptions): Observable<Pagination<User>> {
+        return from(paginate<User>(this.userRepository, options)).pipe(
+            map((usersPageable:Pagination<User>)=>{
+                usersPageable.items.forEach((user)=>{
+                    delete user.password;
+                })
+                return usersPageable;
+            }),
+        );
     }
 }
