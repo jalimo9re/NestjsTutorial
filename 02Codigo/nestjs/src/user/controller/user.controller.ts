@@ -32,23 +32,27 @@ export class UserController {
             })
         );
     }
+
+    @hasRoles(UserRole.ADMIN)
+    @UseGuards(JwtAuthGuard,RolesGuard)
     @Get(':id')
     findOne(@Param() params):Observable<User>{
         return this.userService.findOne(params.id);
     }
-    // TODO 
-    @hasRoles(UserRole.ADMIN)
-    @UseGuards(JwtAuthGuard,RolesGuard)
-    @Get()
-    findAll():Observable<User[]>{
-        return this.userService.findAll();
-    }
+
 
     // TODO solo el propio usuario podra actualizarse a si mismo DONE
+    // tambien podria hacerse con un guard, pero lo he hecho asi para probar otras posibilidades
     @UseGuards(JwtAuthGuard)
     @Put(':id')
     updateOne(@Usr() userjwt:User,@Param('id') id:string,@Body() user:User):Observable<any>{
         return this.userService.updateOne(Number(id),user,userjwt);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Put('password/:id')
+    updatePassword(@Usr() userjwt:User,@Param('id') id:string,@Body() user:User):Observable<any>{
+        return this.userService.updatePassword(Number(id),user,userjwt);
     }
 
     @hasRoles(UserRole.ADMIN)
@@ -57,6 +61,7 @@ export class UserController {
     deleteOne(@Param('id') id:string):Observable<any>{
         return this.userService.deleteOne(Number(id));
     }
+
     @hasRoles(UserRole.ADMIN)
     @UseGuards(JwtAuthGuard,RolesGuard)
     @Post('email')//TODO mirar porque devuelve el primer usuario sino se le pasa un email
@@ -77,14 +82,21 @@ export class UserController {
         
     }
 
+    // TODO 
     @hasRoles(UserRole.ADMIN)
     @UseGuards(JwtAuthGuard,RolesGuard)
-    @Post('exits')//TODO mirar porque devuelve el primer usuario sino se le pasa un email
+    @Get()
+    findAll():Observable<User[]>{
+        return this.userService.findAll();
+    }
+    
+
+    @Post('exists')//TODO mirar porque devuelve el primer usuario sino se le pasa un email
     emailExits(@Body() user:User):Observable<Boolean>{
         return this.userService.emailExits(user);
     }
-    // TODO findOneByEmail
-    // TODO updateRoleofUser
+    // TODO findOneByEmail DONE
+    // TODO updateRoleofUser DONE
     // TODO updatePassword
-    // TODO userexist
+    // TODO userexist DONE
 }

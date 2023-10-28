@@ -36,8 +36,6 @@ export class UserService {
         );
     }
     login(user:User):Observable<string>{
-        console.log(process.env.JWT_SECRET);
-        console.log(process.env.JWT_EXPIRES_IN);
         return this.validateUser(user.email,user.password).pipe(
             switchMap((user:User)=>{
                 if(user){
@@ -61,7 +59,6 @@ export class UserService {
                         map((match:any|boolean)=>{
                             if(match){
                                 const {password ,...result}=user;
-                                console.log(result);   
                                 return result;
                             }else{
                                 throw Error;
@@ -95,7 +92,8 @@ export class UserService {
         return from(this.userRepository.findOneBy({id:id })).pipe(
             map((user:User)=>{
                 if(user){
-                    return user;
+                    const {password ,...result}=user;
+                    return result;
                 }else{
                     return null;
                 }
@@ -127,9 +125,26 @@ export class UserService {
         delete user.email;
         delete user.password;
         delete user.role;
+        delete user.id;
         return from(this.userRepository.update(Number(id),user)).pipe(
             switchMap(()=>this.findOne(id)),
         );
+    }
+    updatePassword(id:number,user:User,userjwt:User):Observable<any>{
+        if(userjwt.id!=id){
+            throw ForbiddenException;
+        }
+        return from(this.authService.hashPassword(user.password).pipe(
+            switchMap((passwordHash:string)=>{
+                delete user.email;
+                delete user.name;
+                delete user.role;
+                delete user.id;
+                return from(this.userRepository.update(Number(id),user)).pipe(
+                    switchMap(()=>this.findOne(id)),
+                );
+            })));
+        
     }
     updateRoleOfUser(id:number,user:User):Observable<any>{
         delete user.email;
